@@ -67,24 +67,24 @@ export default function SettingsModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#1e1f20] border border-gemini-border w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+      <div className="bg-[#1e1f20] border border-gemini-border w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] sm:max-h-[90vh]">
         {/* Modal Header */}
-        <div className="px-5 py-4 border-b border-gemini-border flex items-center justify-between">
+        <div className="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-gemini-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sliders size={18} className="text-gemini-accent" />
-            <h3 className="font-semibold text-base text-white">App & API Settings</h3>
+            <h3 className="font-semibold text-sm sm:text-base text-white">App & API Settings</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-gemini-surface text-gemini-muted hover:text-white transition-colors"
+            className="p-1.5 rounded-lg hover:bg-gemini-surface text-gemini-muted hover:text-white transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 overflow-y-auto space-y-6 text-sm">
+        <div className="p-3.5 sm:p-5 overflow-y-auto space-y-4 sm:space-y-6 text-xs sm:text-sm">
           {/* Section 1: Google Gemini API Key */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">

@@ -70,29 +70,29 @@ export default function AssistantModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-[#1e1f20] border border-gemini-border w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-black/70 backdrop-blur-sm">
+      <div className="bg-[#1e1f20] border border-gemini-border w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92dvh] sm:max-h-[90vh]">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-gemini-border flex items-center justify-between">
+        <div className="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-gemini-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-md gemini-gradient-bg flex items-center justify-center text-white">
               <Bot size={15} />
             </div>
             <div>
-              <h3 className="font-semibold text-base text-white">Make Your Own AI</h3>
-              <p className="text-[11px] text-gemini-muted">Create a personalized AI persona with custom instructions</p>
+              <h3 className="font-semibold text-sm sm:text-base text-white">Make Your Own AI</h3>
+              <p className="text-[10px] sm:text-[11px] text-gemini-muted">Create a personalized AI persona with custom instructions</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-gemini-surface text-gemini-muted hover:text-white transition-colors"
+            className="p-1.5 rounded-lg hover:bg-gemini-surface text-gemini-muted hover:text-white transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Body */}
-        <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-4 text-sm">
+        <form onSubmit={handleSubmit} className="p-3.5 sm:p-5 overflow-y-auto space-y-3.5 sm:space-y-4 text-xs sm:text-sm">
           {error && (
             <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300">
               {error}

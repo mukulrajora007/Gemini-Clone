@@ -14,7 +14,7 @@ export default function App() {
   const [isAssistantModalOpen, setIsAssistantModalOpen] = useState(false);
 
   return (
-    <div className="flex h-screen w-screen bg-gemini-dark text-gemini-text overflow-hidden">
+    <div className="flex h-[100dvh] w-full bg-gemini-dark text-gemini-text overflow-hidden relative">
       {/* Sidebar */}
       <Sidebar
         isOpen={isSidebarOpen}

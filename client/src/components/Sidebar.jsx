@@ -14,6 +14,7 @@ import {
   Search,
   ChevronRight,
   Database,
+  X,
 } from 'lucide-react';
 
 export default function Sidebar({
@@ -47,18 +48,18 @@ export default function Sidebar({
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-black/60 z-30 md:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/70 z-30 md:hidden backdrop-blur-sm transition-opacity"
         />
       )}
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-40 w-72 bg-[#171819] border-r border-gemini-border flex flex-col transition-transform duration-200 ease-in-out ${
+        className={`fixed md:static inset-y-0 left-0 z-40 w-72 max-w-[85vw] bg-[#171819] border-r border-gemini-border flex flex-col transition-transform duration-200 ease-in-out shadow-2xl md:shadow-none ${
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         {/* Top Header: Logo + New Chat */}
-        <div className="p-3.5 flex flex-col gap-3 border-b border-gemini-border/50">
+        <div className="p-3 sm:p-3.5 flex flex-col gap-2.5 sm:gap-3 border-b border-gemini-border/50">
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg gemini-gradient-bg flex items-center justify-center text-white shadow-sm">
@@ -68,15 +69,25 @@ export default function Sidebar({
                 Gemini <span className="text-gemini-accent">AI</span>
               </span>
             </div>
-            {isConfigured && (
-              <span
-                title="Supabase Connected"
-                className="flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20"
+            
+            <div className="flex items-center gap-1.5">
+              {isConfigured && (
+                <span
+                  title="Supabase Connected"
+                  className="flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20"
+                >
+                  <Database size={10} />
+                  Cloud
+                </span>
+              )}
+              <button
+                onClick={onClose}
+                className="md:hidden p-1.5 rounded-lg hover:bg-gemini-surface text-gemini-muted hover:text-white transition-colors"
+                aria-label="Close Sidebar"
               >
-                <Database size={10} />
-                Cloud
-              </span>
-            )}
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
           <button

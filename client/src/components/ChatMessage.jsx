@@ -13,22 +13,22 @@ function CodeBlock({ language, value }) {
   };
 
   return (
-    <div className="my-3 rounded-lg overflow-hidden border border-gemini-border bg-[#18191a] shadow-md">
-      <div className="flex items-center justify-between px-4 py-1.5 bg-[#212224] text-xs text-gemini-muted font-mono border-b border-gemini-border">
-        <span className="flex items-center gap-1.5">
-          <Terminal size={13} className="text-gemini-accent" />
-          {language || 'code'}
+    <div className="my-2.5 sm:my-3 rounded-lg overflow-hidden border border-gemini-border bg-[#18191a] shadow-md">
+      <div className="flex items-center justify-between px-3 sm:px-4 py-1.5 bg-[#212224] text-[11px] sm:text-xs text-gemini-muted font-mono border-b border-gemini-border">
+        <span className="flex items-center gap-1.5 truncate pr-2">
+          <Terminal size={12} className="text-gemini-accent flex-shrink-0" />
+          <span className="truncate">{language || 'code'}</span>
         </span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 hover:text-white transition-colors"
+          className="flex items-center gap-1 hover:text-white transition-colors flex-shrink-0"
           title="Copy Code"
         >
-          {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+          {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
           <span>{copied ? 'Copied!' : 'Copy'}</span>
         </button>
       </div>
-      <div className="p-4 overflow-x-auto text-sm font-mono text-[#dcdfe4] leading-relaxed">
+      <div className="p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm font-mono text-[#dcdfe4] leading-relaxed">
         <pre className="!bg-transparent !p-0 !m-0">
           <code>{value}</code>
         </pre>
@@ -49,38 +49,38 @@ export default function ChatMessage({ message, isLast, isGenerating }) {
 
   return (
     <div
-      className={`py-5 px-4 md:px-6 transition-colors ${
+      className={`py-3.5 sm:py-5 px-3 sm:px-4 md:px-6 transition-colors ${
         isUser ? 'bg-transparent' : 'bg-gemini-surface/30'
       }`}
     >
-      <div className="max-w-3xl mx-auto flex gap-4">
+      <div className="max-w-3xl mx-auto flex gap-2.5 sm:gap-4">
         {/* Avatar */}
         <div className="flex-shrink-0 pt-0.5">
           {isUser ? (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-sm">
-              <User size={18} />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-sm text-xs">
+              <User size={15} />
             </div>
           ) : (
-            <div className="w-8 h-8 rounded-full gemini-gradient-bg flex items-center justify-center text-white shadow-md">
-              <Sparkles size={18} className={isLast && isGenerating ? 'animate-spin' : ''} />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full gemini-gradient-bg flex items-center justify-center text-white shadow-md">
+              <Sparkles size={15} className={isLast && isGenerating ? 'animate-spin' : ''} />
             </div>
           )}
         </div>
 
         {/* Message Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-gemini-muted">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-gemini-muted">
               {isUser ? 'You' : 'Gemini'}
             </span>
             {message.model && !isUser && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-gemini-surface text-gemini-muted border border-gemini-border">
+              <span className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-gemini-surface text-gemini-muted border border-gemini-border">
                 {message.model}
               </span>
             )}
           </div>
 
-          <div className="prose-gemini break-words text-[15px]">
+          <div className="prose-gemini break-words text-[14px] sm:text-[15px]">
             {message.content ? (
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}

@@ -5,15 +5,20 @@
 @layer base {
   * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
   
-  body {
+  html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: #131314;
     color: #e3e3e3;
     overflow: hidden;
+    touch-action: manipulation;
   }
 }
 
