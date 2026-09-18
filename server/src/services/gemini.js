@@ -22,13 +22,36 @@ export function getGeminiClient(apiKey) {
 export function formatMessagesForGemini(messages = []) {
   return messages.map((msg) => {
     const role = msg.role === 'assistant' || msg.role === 'model' ? 'model' : 'user';
+    const parts = [];
+
+    // Handle multimodal media attachments (images, documents, PDFs)
+    if (msg.attachments && Array.isArray(msg.attachments)) {
+      for (const att of msg.attachments) {
+        if (att && att.data && att.mimeType) {
+          const rawBase64 = att.data.includes('base64,')
+            ? att.data.split('base64,')[1]
+            : att.data;
+          parts.push({
+            inlineData: {
+              mimeType: att.mimeType,
+              data: rawBase64,
+            },
+          });
+        }
+      }
+    }
+
+    // Add text prompt part
+    const textContent = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
+    if (textContent && textContent.trim() !== '') {
+      parts.push({ text: textContent });
+    } else if (parts.length === 0) {
+      parts.push({ text: ' ' });
+    }
+
     return {
       role,
-      parts: [
-        {
-          text: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content),
-        },
-      ],
+      parts,
     };
   });
 }

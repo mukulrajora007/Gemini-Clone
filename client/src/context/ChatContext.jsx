@@ -325,20 +325,24 @@ export function ChatProvider({ children }) {
     }
   };
 
-  // Send message and stream Gemini response
-  const sendMessage = async (userPrompt) => {
-    if (!userPrompt || userPrompt.trim() === '' || isGenerating) return;
+  // Send message and stream Gemini response (with multimodal attachments)
+  const sendMessage = async (userPrompt, attachments = []) => {
+    const hasText = userPrompt && userPrompt.trim() !== '';
+    const hasMedia = attachments && attachments.length > 0;
+    if ((!hasText && !hasMedia) || isGenerating) return;
 
     let targetConvId = currentConversationId;
     if (!targetConvId) {
-      const title = userPrompt.length > 32 ? `${userPrompt.substring(0, 32)}...` : userPrompt;
+      const titleText = hasText ? userPrompt.trim() : (attachments[0]?.name || 'Media Analysis');
+      const title = titleText.length > 32 ? `${titleText.substring(0, 32)}...` : titleText;
       targetConvId = await createNewConversation(title);
     }
 
     const userMessage = {
       id: `usr_${Date.now()}`,
       role: 'user',
-      content: userPrompt.trim(),
+      content: userPrompt ? userPrompt.trim() : '',
+      attachments: attachments || [],
       created_at: new Date().toISOString(),
     };
 
@@ -370,10 +374,11 @@ export function ChatProvider({ children }) {
         headers['x-gemini-api-key'] = customApiKey;
       }
 
-      // Format payload messages for Gemini
+      // Format payload messages for Gemini including attachments
       const chatHistory = updatedMessages.map((m) => ({
         role: m.role === 'model' || m.role === 'assistant' ? 'model' : 'user',
         content: m.content,
+        attachments: m.attachments || [],
       }));
 
       const res = await fetch('/api/chat/stream', {

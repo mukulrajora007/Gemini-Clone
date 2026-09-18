@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Sparkles, User, Copy, Check, Terminal } from 'lucide-react';
+import { Sparkles, User, Copy, Check, Terminal, FileText, X, ExternalLink } from 'lucide-react';
 
 function CodeBlock({ language, value }) {
   const [copied, setCopied] = useState(false);
@@ -40,6 +40,7 @@ function CodeBlock({ language, value }) {
 export default function ChatMessage({ message, isLast, isGenerating }) {
   const isUser = message.role === 'user';
   const [copied, setCopied] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const handleCopyAll = () => {
     navigator.clipboard.writeText(message.content);
@@ -80,6 +81,59 @@ export default function ChatMessage({ message, isLast, isGenerating }) {
             )}
           </div>
 
+          {/* Attached Media / Documents */}
+          {message.attachments && message.attachments.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-2.5">
+              {message.attachments.map((file, idx) => {
+                const isImage =
+                  file.mimeType?.startsWith('image/') ||
+                  (file.data && file.data.startsWith('data:image/'));
+
+                if (isImage) {
+                  return (
+                    <div key={idx} className="relative group">
+                      <img
+                        src={file.data}
+                        alt={file.name || 'Attached image'}
+                        onClick={() => setPreviewImage(file)}
+                        className="max-h-56 sm:max-h-72 max-w-full rounded-xl border border-gemini-border object-cover cursor-pointer shadow-md hover:opacity-95 transition-all"
+                      />
+                      <div
+                        onClick={() => setPreviewImage(file)}
+                        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 rounded-xl flex items-center justify-center cursor-pointer transition-opacity text-white text-xs gap-1"
+                      >
+                        <ExternalLink size={14} />
+                        <span>View</span>
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2.5 p-2 px-3 rounded-xl bg-gemini-surface border border-gemini-border text-xs text-gemini-text shadow-sm"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center flex-shrink-0">
+                      <FileText size={16} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium truncate max-w-[200px] text-white">
+                        {file.name || 'Document'}
+                      </p>
+                      {file.size && (
+                        <p className="text-[10px] text-gemini-muted">
+                          {(file.size / 1024).toFixed(0)} KB
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Text Content */}
           <div className="prose-gemini break-words text-[14px] sm:text-[15px]">
             {message.content ? (
               <ReactMarkdown
@@ -102,7 +156,7 @@ export default function ChatMessage({ message, isLast, isGenerating }) {
               >
                 {message.content}
               </ReactMarkdown>
-            ) : (
+            ) : isUser ? null : (
               <div className="flex items-center gap-1.5 text-gemini-muted text-sm py-2">
                 <span className="w-2 h-2 rounded-full bg-gemini-accent animate-ping" />
                 <span>Thinking...</span>
@@ -125,6 +179,35 @@ export default function ChatMessage({ message, isLast, isGenerating }) {
           )}
         </div>
       </div>
+
+      {/* Image Lightbox Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            className="relative max-w-4xl max-h-[90vh] flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-full flex items-center justify-between pb-2 text-white text-sm">
+              <span className="truncate pr-4">{previewImage.name || 'Image Preview'}</span>
+              <button
+                onClick={() => setPreviewImage(null)}
+                className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <img
+              src={previewImage.data}
+              alt={previewImage.name}
+              className="max-h-[82vh] max-w-full rounded-lg border border-gemini-border object-contain shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
