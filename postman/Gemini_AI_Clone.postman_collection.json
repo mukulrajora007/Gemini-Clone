@@ -1,0 +1,188 @@
+{
+  "info": {
+    "_postman_id": "8e3fb77a-6b45-42cf-bbbb-f88db641e421",
+    "name": "Gemini AI Clone API",
+    "description": "Comprehensive Postman collection for testing the Gemini AI Clone Express Backend, Google Gemini API integration (@google/genai), and custom assistants.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Health & Status",
+      "item": [
+        {
+          "name": "Check Server Health & API Key Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Returns backend health status, timestamp, service name, and whether GEMINI_API_KEY is configured on the server."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Gemini Models",
+      "item": [
+        {
+          "name": "List Available Models",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/models",
+              "host": ["{{base_url}}"],
+              "path": ["api", "models"]
+            },
+            "description": "Lists supported Google Gemini models including Gemini 3.8 Flash, 3.5 Flash-Lite, and 3.1 Pro Preview."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Chat Completions",
+      "item": [
+        {
+          "name": "Chat Completion (Non-Streaming)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-gemini-api-key",
+                "value": "{{gemini_api_key}}",
+                "description": "Optional if configured in server .env; provide your Gemini API key here."
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Explain the difference between Vite and Webpack in 2 concise bullet points.\"\n    }\n  ],\n  \"model\": \"gemini-3.8-flash\",\n  \"temperature\": 0.7,\n  \"systemInstruction\": \"You are a helpful software engineering mentor.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/chat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "chat"]
+            },
+            "description": "Generates a full AI completion response using Google Gemini API."
+          },
+          "response": []
+        },
+        {
+          "name": "Chat Completion (SSE Streaming)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              },
+              {
+                "key": "x-gemini-api-key",
+                "value": "{{gemini_api_key}}",
+                "description": "Optional if configured in server .env; provide your Gemini API key here."
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Write a haiku about artificial intelligence.\"\n    }\n  ],\n  \"model\": \"gemini-3.8-flash\",\n  \"temperature\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/chat/stream",
+              "host": ["{{base_url}}"],
+              "path": ["api", "chat", "stream"]
+            },
+            "description": "Streams chunks of the AI response in real-time via Server-Sent Events (SSE). Use Postman's streaming view to observe tokens as they arrive."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. AI Assistants (Make Your Own AI)",
+      "item": [
+        {
+          "name": "List All Assistants (Presets + Custom)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/assistants",
+              "host": ["{{base_url}}"],
+              "path": ["api", "assistants"]
+            },
+            "description": "Retrieves preset assistants (Code Wizard, Creative Storyteller, Data Analyst, Socratic Tutor) and user-created custom assistants."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Custom Assistant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"FullStack Debugger\",\n  \"description\": \"Specialized in finding bugs in React and Node.js applications\",\n  \"systemInstruction\": \"You are a ruthless debugging expert. Always inspect syntax, asynchronous race conditions, and network payloads.\",\n  \"icon\": \"Bug\",\n  \"accentColor\": \"rose\",\n  \"model\": \"gemini-3.8-flash\",\n  \"temperature\": 0.2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/assistants",
+              "host": ["{{base_url}}"],
+              "path": ["api", "assistants"]
+            },
+            "description": "Creates a new custom AI persona with custom instructions, icon, accent color, and model parameters."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Custom Assistant",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/assistants/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "assistants", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "custom_assistant_id_here",
+                  "description": "ID of the custom assistant to delete"
+                }
+              ]
+            },
+            "description": "Deletes a user-created custom assistant."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "gemini_api_key",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
