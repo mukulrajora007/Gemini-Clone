@@ -74,7 +74,10 @@ export function ChatProvider({ children }) {
     () => localStorage.getItem('gemini_clone_model') || 'gemini-3.5-flash-lite'
   );
   const [customApiKey, setCustomApiKey] = useState(
-    () => localStorage.getItem('gemini_clone_api_key') || ''
+    () =>
+      localStorage.getItem('gemini_clone_api_key') ||
+      (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY) ||
+      ''
   );
   const [activeAssistant, setActiveAssistant] = useState(PRESET_ASSISTANTS[0]);
   const [assistants, setAssistants] = useState(PRESET_ASSISTANTS);
@@ -83,6 +86,18 @@ export function ChatProvider({ children }) {
     healthy: false,
     hasServerApiKey: false,
   });
+
+  // Sync API key with Supabase user metadata when user logs in so it persists across all devices
+  useEffect(() => {
+    if (user?.user_metadata?.gemini_api_key) {
+      const cloudKey = user.user_metadata.gemini_api_key.trim();
+      if (cloudKey && !customApiKey) {
+        setCustomApiKey(cloudKey);
+        localStorage.setItem('gemini_clone_api_key', cloudKey);
+      }
+    }
+  }, [user, customApiKey]);
+
 
   const abortControllerRef = useRef(null);
 
@@ -212,13 +227,25 @@ export function ChatProvider({ children }) {
   }, [currentConversationId, loadMessages]);
 
   // Save custom Gemini API key
-  const saveCustomApiKey = (key) => {
+  const saveCustomApiKey = async (key) => {
     const cleanKey = (key || '').trim();
     setCustomApiKey(cleanKey);
     if (cleanKey) {
       localStorage.setItem('gemini_clone_api_key', cleanKey);
     } else {
       localStorage.removeItem('gemini_clone_api_key');
+    }
+
+    // Persist to Supabase user metadata so it syncs across all user's devices
+    const supabase = getSupabase();
+    if (user && supabase) {
+      try {
+        await supabase.auth.updateUser({
+          data: { gemini_api_key: cleanKey },
+        });
+      } catch (err) {
+        console.warn('Failed to sync API key to user metadata:', err);
+      }
     }
   };
 

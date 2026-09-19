@@ -15,6 +15,7 @@ import {
   EyeOff,
   ExternalLink,
   RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 
 export default function SettingsModal({ isOpen, onClose }) {
@@ -124,18 +125,33 @@ export default function SettingsModal({ isOpen, onClose }) {
               </button>
             </div>
 
-            <div className="text-[11px] text-gemini-muted flex items-center gap-2 pt-1">
-              <span>Server Fallback Key:</span>
-              <span
-                className={`px-1.5 py-0.5 rounded text-[10px] ${
-                  serverStatus.hasServerApiKey
-                    ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
-                    : 'bg-zinc-800 text-zinc-400'
-                }`}
-              >
-                {serverStatus.hasServerApiKey ? 'Configured in .env' : 'Not configured on server'}
+            <div className="text-[11px] text-gemini-muted flex items-center justify-between pt-1">
+              <span className="flex items-center gap-2">
+                <span>Server API Key:</span>
+                <span
+                  className={`px-1.5 py-0.5 rounded text-[10px] ${
+                    serverStatus.hasServerApiKey
+                      ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
+                      : 'bg-zinc-800 text-zinc-400'
+                  }`}
+                >
+                  {serverStatus.hasServerApiKey ? 'Active on Server (No config needed)' : 'Not configured on server'}
+                </span>
               </span>
             </div>
+
+            {/* Permanent Zero-Config Helper */}
+            {!serverStatus.hasServerApiKey && (
+              <div className="mt-2 p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[11px] text-blue-200/90 leading-relaxed">
+                <p className="font-semibold text-blue-300 mb-1 flex items-center gap-1.5">
+                  <Sparkles size={13} className="text-blue-400 flex-shrink-0" />
+                  <span>How to never enter the key again:</span>
+                </p>
+                <p className="text-gemini-muted">
+                  Add <code className="bg-[#101112] px-1.5 py-0.5 rounded text-blue-300 font-mono">GEMINI_API_KEY</code> in your <strong>Vercel Project &rarr; Settings &rarr; Environment Variables</strong> (or <code className="bg-[#101112] px-1.5 py-0.5 rounded text-blue-300 font-mono">server/.env</code> locally). Once set on the server, the site works instantly for everyone on all devices!
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Section 2: Supabase Auth & DB Config */}
